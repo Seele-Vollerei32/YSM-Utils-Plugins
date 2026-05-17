@@ -4,12 +4,15 @@ import propertiesVue from "../vue/import/properties.vue";
 import playerFilesVue from "../vue/import/player_files.vue";
 import otherFilesVue from "../vue/import/other_files.vue";
 import languageVue from "../vue/import/language_edit.vue";
-import cryptoLib from "crypto";
 import {saveNormalization} from "./save_normalization.js";
 import {readYsmFile} from "./ysm_file_read.js";
 import {getLanguageMap} from "../util/language.js";
+import {fs} from "../util/native.js";
+import {showMessageBox} from "../util/dialogs.js";
 
-function onDialogCancel(ysmJson, ysmJsonPath, sha256Cache) {
+const cryptoLib = requireNativeModule('crypto');
+
+async function onDialogCancel(ysmJson, ysmJsonPath, sha256Cache) {
     // 关闭页面时，计算一次哈希值
     let sha256 = getSha256(ysmJson);
     // 哈希值相同，说明文件没有做任何修改，直接关闭
@@ -17,11 +20,13 @@ function onDialogCancel(ysmJson, ysmJsonPath, sha256Cache) {
         return true;
     }
     // 否则强制提示是否保存？
-    let button = electron.dialog.showMessageBoxSync({
-        type: "warning",
-        title: tl("level.ysm_utils.warning"),
-        message: tl("menu.ysm_utils.load_info_menu.save_tip"),
-        buttons: [tl("menu.ysm_utils.save"), tl("menu.ysm_utils.exit_without_save"), tl("dialog.cancel")],
+    let button = await new Promise(resolve => {
+        showMessageBox({
+            type: "warning",
+            title: tl("level.ysm_utils.warning"),
+            message: tl("menu.ysm_utils.load_info_menu.save_tip"),
+            buttons: [tl("menu.ysm_utils.save"), tl("menu.ysm_utils.exit_without_save"), tl("dialog.cancel")],
+        }, resolve);
     });
     if (button === 0) {
         // 保存并退出
@@ -87,8 +92,8 @@ export function openImportDialog(packDirectory) {
                 return true;
             }
         },
-        onCancel: function (event) {
-            return onDialogCancel(ysmJson, ysmJsonPath, sha256Cache);
+        onCancel: async function (event) {
+            return await onDialogCancel(ysmJson, ysmJsonPath, sha256Cache);
         },
         sidebar: {
             pages: {
@@ -105,8 +110,7 @@ export function openImportDialog(packDirectory) {
                     name: "menu.ysm_utils.load_info_menu.open_folder",
                     icon: "fa-folder-open",
                     click: function () {
-                        electron.shell.openPath(packDirectory).then(result => {
-                        });
+                        Blockbench.openLink(packDirectory);
                     }
                 }),
             ],

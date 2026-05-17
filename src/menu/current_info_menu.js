@@ -1,5 +1,6 @@
 import {openImportDialog} from "../import/open_import_dialog.js";
 import {getProjectPathInfo, hasProjectPathInfo} from "../util/project_info_manager.js";
+import {fs} from "../util/native.js";
 
 export let currentInfoMenuAction = new Action("ysm_utils.current_info_menu", {
     name: "menu.ysm_utils.current_info_menu.name",

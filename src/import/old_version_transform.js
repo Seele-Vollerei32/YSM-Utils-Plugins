@@ -1,5 +1,5 @@
 import {join} from "path";
-import {copyFileSync, mkdirSync} from "fs";
+import {fs} from "../util/native.js";
 
 function basicFileGeneration(destPackPath, srcPackPath) {
     // 生成文件夹
@@ -8,11 +8,11 @@ function basicFileGeneration(destPackPath, srcPackPath) {
     let modelsPath = join(destPackPath, "models");
     let texturesPath = join(destPackPath, "textures");
 
-    mkdirSync(destPackPath, {recursive: true});
-    mkdirSync(animationsPath, {recursive: true});
-    mkdirSync(avatarsPath, {recursive: true});
-    mkdirSync(modelsPath, {recursive: true});
-    mkdirSync(texturesPath, {recursive: true});
+    fs.mkdirSync(destPackPath, {recursive: true});
+    fs.mkdirSync(animationsPath, {recursive: true});
+    fs.mkdirSync(avatarsPath, {recursive: true});
+    fs.mkdirSync(modelsPath, {recursive: true});
+    fs.mkdirSync(texturesPath, {recursive: true});
 
     // 复制动画文件
     copyFile(srcPackPath, "main.animation.json", animationsPath);
@@ -134,7 +134,7 @@ function copyFile(srcPath, srcFileName, destPath) {
     let srcFilePath = join(srcPath, srcFileName);
     if (fs.existsSync(srcFilePath)) {
         let destFilePath = join(destPath, srcFileName);
-        copyFileSync(srcFilePath, destFilePath);
+        fs.copyFileSync(srcFilePath, destFilePath);
     }
 }
 

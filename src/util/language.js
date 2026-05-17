@@ -1,4 +1,5 @@
 import {join} from "path";
+import {fs} from "./native.js";
 
 export function writeLanguageFile(locale, filePath, translations) {
     // 先判断目录是否存在

@@ -1,5 +1,6 @@
 import {checkDirectory} from "../import/check_directory.js";
 import {openImportTypeDialog} from "./direct_import.js";
+import {fs} from "../util/native.js";
 
 const CACHE_YSM_FOLDERS = [];
 

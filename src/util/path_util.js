@@ -1,4 +1,5 @@
 import {dirname} from "path";
+import {fs} from "./native.js";
 
 export function arePathsEqual(path1, path2) {
     // 如果文件不存在，那么必然不相等
@@ -12,7 +13,7 @@ export function arePathsEqual(path1, path2) {
         const absolutePath2 = fs.realpathSync(path2);
 
         // 在 POSIX 系统上，路径是区分大小写的
-        if (process.platform !== "win32") {
+        if (SystemInfo.platform !== "win32") {
             return absolutePath1 === absolutePath2;
         } else {
             // 在 Windows 系统上，路径是不区分大小写的

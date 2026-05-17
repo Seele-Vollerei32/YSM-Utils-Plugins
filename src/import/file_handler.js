@@ -1,5 +1,7 @@
 import {join} from "path";
 import {arePathsEqual, createDirectories} from "../util/path_util.js";
+import {fs} from "../util/native.js";
+import {trashItem, pickDirectory} from "../util/dialogs.js";
 
 export async function changeCurrentFile(packDir, pathValue, defaultDir, extension) {
     return await changeCurrentFileWithFilters(packDir, pathValue, defaultDir, [{
@@ -9,45 +11,40 @@ export async function changeCurrentFile(packDir, pathValue, defaultDir, extensio
 }
 
 export async function changeCurrentFileWithFilters(packDir, pathValue, defaultDir, filters) {
-    let result = await electron.dialog.showOpenDialog(currentwindow, {
-        title: tl("menu.ysm_utils.load_info_menu.files.select_files"),
-        filters: filters,
-        properties: ["openFile"]
-    });
+    let path = pickDirectory(tl("menu.ysm_utils.load_info_menu.files.select_files"));
+    if (!path) return pathValue;
 
-    if (result.filePaths[0]) {
-        console.assert(defaultDir !== "");
-        // 路径为空，说明原文件不存在，那么给一个默认名
-        let srcFilePath;
-        if (!pathValue || pathValue.length === 0) {
-            pathValue = join(defaultDir, pathToName(result.filePaths[0], true));
-            srcFilePath = join(packDir, pathValue);
-            // 看看文件夹存不存在，不存在我们创一个空的
-            await createDirectories(srcFilePath);
-        } else {
-            srcFilePath = join(packDir, pathValue);
-        }
-        let destFilePath = result.filePaths[0];
-        // 路径相同的，不进行任何操作
-        if (arePathsEqual(srcFilePath, destFilePath)) {
-            Blockbench.showQuickMessage(tl("menu.ysm_utils.load_info_menu.files.same_file"), 2000);
-            return pathValue;
-        }
-        // 将原文件丢到回收站
-        let oldFileExists = false;
-        if (fs.existsSync(srcFilePath)) {
-            await electron.shell.trashItem(srcFilePath);
-            oldFileExists = true;
-        }
-        // 复制到指定目录下
-        if (fs.existsSync(destFilePath)) {
-            let error = await fs.promises.copyFile(destFilePath, srcFilePath);
-            if (!error) {
-                if (oldFileExists) {
-                    Blockbench.showQuickMessage(tl("menu.ysm_utils.load_info_menu.files.replace_success.remove_file"), 2000);
-                } else {
-                    Blockbench.showQuickMessage(tl("menu.ysm_utils.load_info_menu.files.replace_success"), 2000);
-                }
+    console.assert(defaultDir !== "");
+    // 路径为空，说明原文件不存在，那么给一个默认名
+    let srcFilePath;
+    if (!pathValue || pathValue.length === 0) {
+        pathValue = join(defaultDir, pathToName(path, true));
+        srcFilePath = join(packDir, pathValue);
+        // 看看文件夹存不存在，不存在我们创一个空的
+        await createDirectories(srcFilePath);
+    } else {
+        srcFilePath = join(packDir, pathValue);
+    }
+    let destFilePath = path;
+    // 路径相同的，不进行任何操作
+    if (arePathsEqual(srcFilePath, destFilePath)) {
+        Blockbench.showQuickMessage(tl("menu.ysm_utils.load_info_menu.files.same_file"), 2000);
+        return pathValue;
+    }
+    // 将原文件丢到回收站
+    let oldFileExists = false;
+    if (fs.existsSync(srcFilePath)) {
+        trashItem(srcFilePath);
+        oldFileExists = true;
+    }
+    // 复制到指定目录下
+    if (fs.existsSync(destFilePath)) {
+        let error = await fs.promises.copyFile(destFilePath, srcFilePath);
+        if (!error) {
+            if (oldFileExists) {
+                Blockbench.showQuickMessage(tl("menu.ysm_utils.load_info_menu.files.replace_success.remove_file"), 2000);
+            } else {
+                Blockbench.showQuickMessage(tl("menu.ysm_utils.load_info_menu.files.replace_success"), 2000);
             }
         }
     }
@@ -79,7 +76,7 @@ export async function removeCurrentFile(packDir, pathValue, callback) {
             let srcFilePath = join(packDir, pathValue);
             // 将原文件丢到回收站
             if (fs.existsSync(srcFilePath)) {
-                electron.shell.trashItem(srcFilePath);
+                trashItem(srcFilePath);
             }
             callback();
         }

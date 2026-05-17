@@ -1,23 +1,16 @@
 import {checkDirectory} from "../import/check_directory.js";
 import {readYsmFile} from "../import/ysm_file_read.js";
 import importTypeVue from "../vue/import/import_type.vue";
+import {pickDirectory} from "../util/dialogs.js";
 
 export let directImportMenuAction = new Action("ysm_utils.direct_import", {
     name: "menu.ysm_utils.direct_import.name",
     icon: "fa-file-import",
     click: function () {
-        electron.dialog.showOpenDialog(currentwindow, {
-            title: tl("menu.ysm_utils.direct_import.name"),
-            properties: ["openDirectory"]
-        }).then(result => {
-            if (result.canceled) {
-                return;
-            }
-            let selectFilePaths = result.filePaths;
-            if (selectFilePaths && selectFilePaths[0] && checkDirectory(selectFilePaths[0])) {
-                openImportTypeDialog(selectFilePaths[0]);
-            }
-        });
+        let path = pickDirectory(tl("menu.ysm_utils.direct_import.name"));
+        if (path && checkDirectory(path)) {
+            openImportTypeDialog(path);
+        }
     }
 });
 

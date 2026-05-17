@@ -1,5 +1,6 @@
 import {join} from "path";
-import {mkdirSync} from "fs";
+import {fs} from "../util/native.js";
+import {showMessageBox, pickDirectory} from "../util/dialogs.js";
 import armAnimationJson from "../../assets/default/animations/arm.animation.json";
 import arrowAnimationJson from "../../assets/default/animations/arrow.animation.json";
 import boatAnimationJson from "../../assets/default/animations/boat.animation.json";
@@ -36,7 +37,7 @@ import {openImportDialog} from "../import/open_import_dialog.js";
 function createAllFiles(selectFilePaths, formResult) {
     let packPath = join(selectFilePaths[0], formResult.packName);
     if (fs.existsSync(packPath)) {
-        electron.dialog.showMessageBoxSync({
+        showMessageBox({
             type: "warning",
             title: tl("level.ysm_utils.warning"),
             message: tl("menu.ysm_utils.create_default_model.same_folder"),
@@ -56,16 +57,16 @@ function createAllFiles(selectFilePaths, formResult) {
     let lang = join(packPath, "lang");
     let gui = join(textures, "gui");
 
-    mkdirSync(packPath, {recursive: true});
-    mkdirSync(animations, {recursive: true});
-    mkdirSync(avatar, {recursive: true});
-    mkdirSync(models, {recursive: true});
-    mkdirSync(textures, {recursive: true});
-    mkdirSync(sounds, {recursive: true});
-    mkdirSync(controller, {recursive: true});
-    mkdirSync(functions, {recursive: true});
-    mkdirSync(lang, {recursive: true});
-    mkdirSync(gui, {recursive: true});
+    fs.mkdirSync(packPath, {recursive: true});
+    fs.mkdirSync(animations, {recursive: true});
+    fs.mkdirSync(avatar, {recursive: true});
+    fs.mkdirSync(models, {recursive: true});
+    fs.mkdirSync(textures, {recursive: true});
+    fs.mkdirSync(sounds, {recursive: true});
+    fs.mkdirSync(controller, {recursive: true});
+    fs.mkdirSync(functions, {recursive: true});
+    fs.mkdirSync(lang, {recursive: true});
+    fs.mkdirSync(gui, {recursive: true});
 
     // 复制文件
     fs.writeFileSync(join(animations, "arm.animation.json"), autoStringify(armAnimationJson));
@@ -141,16 +142,9 @@ export var createDefaultModel = new Action("ysm_utils.create_default_model", {
     name: tl("menu.ysm_utils.create_default_model"),
     icon: "fa-file-alt",
     click: async function () {
-        let result = await electron.dialog.showOpenDialog(currentwindow, {
-            title: tl("menu.ysm_utils.create_default_model.select_output_directory"),
-            properties: ["openDirectory"]
-        });
-        if (result.canceled) {
-            return;
-        }
-        let selectFilePaths = result.filePaths;
-        if (selectFilePaths && selectFilePaths[0]) {
-            openDialog(selectFilePaths);
+        let path = pickDirectory(tl("menu.ysm_utils.create_default_model.select_output_directory"));
+        if (path) {
+            openDialog([path]);
         }
     }
 });

@@ -6,7 +6,7 @@ import {directImportMenuAction} from "./menu/direct_import.js";
 import {createDefaultModel} from "./create/create_default.js";
 import {addYsmMolang} from "./molang/ysm_molang.js";
 
-BBPlugin.register(packageInfo.name, {
+Plugin.register(packageInfo.name, {
     title: packageInfo.title,
     author: packageInfo.author,
     description: packageInfo.description,

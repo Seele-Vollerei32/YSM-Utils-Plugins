@@ -5,6 +5,7 @@ import {editExtraAnimationClassifyDialog} from "../../import/edit_extra_animatio
 import {editExtraAnimationButtonsDialog} from "../../import/edit_extra_animation_buttons.js";
 import {changeCurrentFile, changeCurrentFileWithFilters, removeCurrentFile} from "../../import/file_handler.js";
 import {SUPPORTED_IMAGE_NAMES, SUPPORTED_IMAGE_TYPES} from "../../util/image_handle.js";
+import {fs} from "../../util/native.js";
 
 export default {
     props: {

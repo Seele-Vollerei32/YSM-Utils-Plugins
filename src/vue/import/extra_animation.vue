@@ -1,5 +1,6 @@
 <script>
 import {join} from "path";
+import {fs} from "../../util/native.js";
 
 export default {
     props: {

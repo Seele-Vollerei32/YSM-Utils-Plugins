@@ -9,16 +9,16 @@ export default {
     input: "src/index.js",
     output: {
         file: "ysm-utils.js",
-        format: "cjs"
+        format: "iife",
+        globals: {
+            path: "PathModule"
+        }
     },
     plugins: [
         vue(),
         json(),
         resolve(),
         commonjs(),
-        terser({
-            mangle: false
-        }),
         image()
     ],
     external: ["path"]

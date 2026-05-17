@@ -2,6 +2,7 @@ import {join} from "path";
 import JSON5 from "json5";
 import {loadNormalization} from "./load_normalization.js";
 import {addToYsmCache} from "../menu/cache_info_menu.js";
+import {fs} from "../util/native.js";
 
 export function readYsmFile(packDirectory) {
     let ysmJsonPath = join(packDirectory, "ysm.json");

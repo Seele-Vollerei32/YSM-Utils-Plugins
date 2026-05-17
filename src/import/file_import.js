@@ -1,6 +1,7 @@
 import {join} from "path";
 import {addProjectInfo} from "../util/project_info_manager.js";
 import {isSupportImage} from "../util/image_handle.js";
+import {fs} from "../util/native.js";
 
 const JSON_OPTIONS = {readtype: "text", errorbox: true};
 const IMG_OPTIONS = {readtype: "image", errorbox: true};

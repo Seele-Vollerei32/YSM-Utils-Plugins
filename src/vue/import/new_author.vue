@@ -2,6 +2,8 @@
 import {join} from "path";
 import {arePathsEqual} from "../../util/path_util.js";
 import {SUPPORTED_IMAGE_NAMES, SUPPORTED_IMAGE_TYPES} from "../../util/image_handle.js";
+import {fs} from "../../util/native.js";
+import {trashItem, showMessageBox, pickDirectory} from "../../util/dialogs.js";
 
 export default {
     props: {
@@ -74,14 +76,14 @@ export default {
                     if (deleteAuthors[0]["avatar"]) {
                         let avatarPath = join(this.packDirectory, deleteAuthors[0]["avatar"]);
                         if (fs.existsSync(avatarPath)) {
-                            electron.shell.trashItem(avatarPath);
+                            trashItem(avatarPath);
                         }
                     }
                     this.newAuthorDialog.close();
                 }
             });
         },
-        addAuthor: function () {
+        addAuthor: async function () {
             // 先检查必填字段有没有
             if (!this.newAuthor["name"]) {
                 let tip = tl("menu.ysm_utils.load_info_menu.metadata.authors.need_author_name");
@@ -98,11 +100,13 @@ export default {
                 let destPath = join(destFolderPath, fileName);
                 // 目的地文件是否存在
                 if (fs.existsSync(destPath)) {
-                    let button = electron.dialog.showMessageBoxSync({
-                        type: "warning",
-                        title: tl("level.ysm_utils.warning"),
-                        message: tl("menu.ysm_utils.load_info_menu.metadata.authors.same_file"),
-                        buttons: [tl("dialog.confirm"), tl("dialog.cancel")]
+                    let button = await new Promise(resolve => {
+                        showMessageBox({
+                            type: "warning",
+                            title: tl("level.ysm_utils.warning"),
+                            message: tl("menu.ysm_utils.load_info_menu.metadata.authors.same_file"),
+                            buttons: [tl("dialog.confirm"), tl("dialog.cancel")]
+                        }, resolve);
                     });
                     if (button !== 0) {
                         return;
@@ -144,18 +148,10 @@ export default {
             this.$forceUpdate();
         },
         addAvatarImg: function () {
-            electron.dialog.showOpenDialog(currentwindow, {
-                title: tl("menu.ysm_utils.load_info_menu.metadata.authors.select_author_avatar"),
-                filters: [{
-                    extensions: SUPPORTED_IMAGE_TYPES,
-                    name: SUPPORTED_IMAGE_NAMES
-                }],
-                properties: ["openFile"]
-            }).then(result => {
-                if (result.filePaths[0]) {
-                    this.avatarImgPath = result.filePaths[0];
-                }
-            });
+            let path = pickDirectory(tl("menu.ysm_utils.load_info_menu.metadata.authors.select_author_avatar"));
+            if (path) {
+                this.avatarImgPath = path;
+            }
         }
     }
 };

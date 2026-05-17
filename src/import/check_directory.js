@@ -1,18 +1,13 @@
 import {oldVersionTransform} from "./old_version_transform.js";
 import {join} from "path";
 import {openImportDialog} from "./open_import_dialog.js";
+import {fs} from "../util/native.js";
+import {pickDirectory} from "../util/dialogs.js";
 
 async function doOldVersionTransform(packDirectory, isVersion114) {
-    let result = await electron.dialog.showOpenDialog(currentwindow, {
-        title: tl("menu.ysm_utils.old_version_transform.select_output_directory"),
-        properties: ["openDirectory"]
-    });
-    if (result.canceled) {
-        return;
-    }
-    let selectFilePaths = result.filePaths;
-    if (selectFilePaths && selectFilePaths[0]) {
-        return oldVersionTransform(packDirectory, selectFilePaths[0], isVersion114);
+    let path = pickDirectory(tl("menu.ysm_utils.old_version_transform.select_output_directory"));
+    if (path) {
+        return oldVersionTransform(packDirectory, path, isVersion114);
     }
 }
 

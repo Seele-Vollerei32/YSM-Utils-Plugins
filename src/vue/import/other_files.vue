@@ -3,6 +3,8 @@ import {join} from "path";
 import {changeCurrentFile, changeCurrentFileWithFilters, removeCurrentFile} from "../../import/file_handler.js";
 import {importOtherFile} from "../../import/file_import.js";
 import {SUPPORTED_IMAGE_NAMES, SUPPORTED_IMAGE_TYPES} from "../../util/image_handle.js";
+import {fs} from "../../util/native.js";
+import {trashItem} from "../../util/dialogs.js";
 
 export default {
     props: {
@@ -114,7 +116,7 @@ export default {
                     return;
                 }
                 for (let file of deleteFiles) {
-                    electron.shell.trashItem(file);
+                    trashItem(file);
                 }
                 this.$delete(files, index);
             });
