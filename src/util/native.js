@@ -1,2 +1,3 @@
 const fs = requireNativeModule('fs');
-export { fs };
+const shell = requireNativeModule('electron').shell;
+export { fs, shell };

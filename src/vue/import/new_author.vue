@@ -69,14 +69,14 @@ export default {
                 buttons: [tl("dialog.confirm"), tl("dialog.cancel")],
                 confirm: 0,
                 cancel: 1
-            }, (button) => {
+            }, async (button) => {
                 if (button === 0 && this.isEditAction) {
                     let deleteAuthors = this.authors.splice(this.authorIndex, 1);
                     // 查看头像是否存在，移动到回收站
                     if (deleteAuthors[0]["avatar"]) {
                         let avatarPath = join(this.packDirectory, deleteAuthors[0]["avatar"]);
                         if (fs.existsSync(avatarPath)) {
-                            trashItem(avatarPath);
+                            await trashItem(avatarPath);
                         }
                     }
                     this.newAuthorDialog.close();

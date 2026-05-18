@@ -111,12 +111,12 @@ export default {
                 buttons: [tl("dialog.confirm"), tl("dialog.cancel")],
                 confirm: 0,
                 cancel: 1
-            }, (button) => {
+            }, async (button) => {
                 if (button !== 0) {
                     return;
                 }
                 for (let file of deleteFiles) {
-                    trashItem(file);
+                    await trashItem(file);
                 }
                 this.$delete(files, index);
             });

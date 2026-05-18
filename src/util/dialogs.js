@@ -1,4 +1,4 @@
-import {fs} from "./native.js";
+import {fs, shell} from "./native.js";
 
 export function pickDirectory(title) {
     return Blockbench.pickDirectory({title});
@@ -17,8 +17,8 @@ export function showMessageBox(options, callback) {
     Blockbench.showMessageBox(bbOptions, callback);
 }
 
-export function trashItem(filePath) {
+export async function trashItem(filePath) {
     if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
+        await shell.trashItem(filePath);
     }
 }
