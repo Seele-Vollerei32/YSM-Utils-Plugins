@@ -1,7 +1,5 @@
 import {fs} from "./native.js";
 
-let shell;
-
 export function pickDirectory(title) {
     return Blockbench.pickDirectory({title});
 }
@@ -19,12 +17,8 @@ export function showMessageBox(options, callback) {
     Blockbench.showMessageBox(bbOptions, callback);
 }
 
-export async function trashItem(filePath) {
+export function trashItem(filePath) {
     if (fs.existsSync(filePath)) {
-        shell ??= requireNativeModule('shell', {
-            message: 'This permission is required to move replaced or removed files to the trash.'
-        });
-        if (!shell) return;
-        await shell.trashItem(filePath);
+        fs.unlinkSync(filePath);
     }
 }
