@@ -1,6 +1,6 @@
 # YSM Utils Plugins - Revibed
 
-A Blockbench plugin designed for the [Yes Steve Model](https://github.com/TartaricAcid/Yes-Steve-Model) (YSM) mod - Minecraft Java Edition.
+A Blockbench plugin designed for the Yes Steve Model (YSM) mod - Minecraft Java Edition. (Haven't open source yet, looking forward it) 
 
 ## Features
 
