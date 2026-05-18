@@ -34,7 +34,7 @@ export async function changeCurrentFileWithFilters(packDir, pathValue, defaultDi
     // 将原文件丢到回收站
     let oldFileExists = false;
     if (fs.existsSync(srcFilePath)) {
-        trashItem(srcFilePath);
+        await trashItem(srcFilePath);
         oldFileExists = true;
     }
     // 复制到指定目录下
@@ -71,12 +71,12 @@ export async function removeCurrentFile(packDir, pathValue, callback) {
         buttons: [tl("dialog.confirm"), tl("dialog.cancel")],
         confirm: 0,
         cancel: 1
-    }, (button) => {
+    }, async (button) => {
         if (button === 0) {
             let srcFilePath = join(packDir, pathValue);
             // 将原文件丢到回收站
             if (fs.existsSync(srcFilePath)) {
-                trashItem(srcFilePath);
+                await trashItem(srcFilePath);
             }
             callback();
         }

@@ -1,2 +1,2 @@
 const fs = requireNativeModule('fs');
-export { fs };
+export {fs};
